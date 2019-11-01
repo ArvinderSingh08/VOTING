@@ -1,11 +1,34 @@
 package VotingCandidate;
 import java.awt.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.*;
+import VotingMachine.*;
+import VotingMachine.*;
+public class VotingCandidate{
+        String party;
+        String Name;
+        String Voter_id;
+        int _Age;
+        
+       //VotingMachine vmobj= new VotingMachine();
+	    
+        //public static void main(String[] args) {
+		public VotingCandidate(String A,String B,int C){
+			party="££";
+	        Name=A ;
+	        Voter_id=B;
+	        _Age=C;
 
-public class VotingCandidate {
-
-	public static void main(String[] args) {
-		JFrame frame1 = new JFrame();
+	   
+	       // System.out.println(Name + Voter_id);
+	    JFrame frame1 = new JFrame();
 		JRadioButton jRadioButton = new JRadioButton("BJP (Bharatiya Janata Party)");
 		JRadioButton jRadioButton2 = new JRadioButton("AAP (Aam Aadmi Party)");
 		JRadioButton jRadioButton3 = new JRadioButton("INC(Indian National Congress)");
@@ -73,6 +96,68 @@ public class VotingCandidate {
 		buttonGroup.add(jRadioButton2);
 		buttonGroup.add(jRadioButton3);
 		buttonGroup.add(jRadioButton4);
-	}
+		  
+		
+		button.addActionListener(new ActionListener() {
+			
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				try {
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/votesys","root","12345678");
+					PreparedStatement ps=con.prepareStatement("insert into vote(name,voter_id,age,party)values(?,?,?,?)");
+					if(jRadioButton.isSelected())
+					{
+						party="BJP";
+					}
+					else if(jRadioButton2.isSelected())
+					{
+						party="AAP";
+					}
+					else if(jRadioButton3.isSelected())
+					{
+						party="CONGRESS";
+					}
+					else if(jRadioButton4.isSelected())
+					{
+						party="OTHERS";
+					}
+					System.out.println(Name + Voter_id + _Age + party);
+					ps.setString(1, Name);
+					ps.setString(2, Voter_id);
+					ps.setInt(3, _Age);
+					ps.setString(4, party);
+//					PreparedStatement ps1=con.prepareStatement("select voter_id from vote ");
+//					ResultSet res1=ps1.executeQuery();
+//					while(res1.next())
+//					{
+//						if(res1.getString(B)==Voter_id)
+//						{System.out.println("USER HAS ALREADY VOTED");}
+//						else
+//						{
+					int res=ps.executeUpdate();
+					
+					if(res>0)
+					{
+						System.out.println("NEW USER ADDED TO VOTE BANK");
+						
+					}
+					else
+					{
+						System.out.println("something wrong");
+					}
+			
+			
+				}
+			
+			catch(Exception e1)
+			{
+			System.out.println(e1);	
+			}
+
+		}
+		});
+	}
 }
