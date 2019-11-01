@@ -1,11 +1,27 @@
+
 package VotingMachine;
 import javax.swing.*;
+
+
+import VotingCandidate.VotingCandidate;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class VotingMachine {
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
+	public String name;
+	public String voter_id;
+	public int Age;
+	int flag=0;
+	// VotingMachine vmobj= new VotingMachine();
+	
+		public void voting(){
+	    JFrame frame = new JFrame();
 		JLabel label=new JLabel();
 		JLabel label2 = new JLabel();
 		JLabel label3 = new JLabel();
@@ -95,10 +111,73 @@ public class VotingMachine {
 		button.setFont(font7);
 		
 		
+		button.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+
+				try {
+					name=electorName.getText();
+					voter_id=voterNumber.getText();
+					Age=Integer.parseInt(age.getText());
+//					}
+//					catch(Exception exc) {}
+				System.out.println("NAME:- " + name + " VOTER_ID:- " + voter_id + " AGE:- " +Age );
+//				new VotingCandidate(name,voter_id,Age);
+				
+				Class.forName("com.mysql.jdbc.Driver");
+				Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/votesys","root","12345678");
+				PreparedStatement ps1=con.prepareStatement("select voter_id from vote ");
+				
+				ResultSet res1=ps1.executeQuery();
+				System.out.println("KIDAAAAAAA");
+				while(res1.next())
+				{   flag=0;
+				System.out.println(res1.getString(flag));
+					if(res1.getString(voter_id)==voter_id)
+					{
+					 flag ++;
+					 System.out.println(flag);
+					}
+//					else
+//					{
+//						new VotingCandidate(name,voter_id,Age);
+//					}
+					}
+				}
+				
+				catch(Exception exc) {}
+
+				if (flag>0)
+				{
+					System.out.println("USER HAS ALREADY VOTED");
+				}
+				else 
+				{
+					new VotingCandidate(name,voter_id,Age);
+				}
+
+				dispose();
+//			}
+//			
+//				catch(Exception exc) {}
+			
+
+			
+			}});
+		
+		
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		
 	}
 
+	protected void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }
